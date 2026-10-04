@@ -1,4 +1,4 @@
-"""Command line: python -m comps --target TITAN --price-source screener|bhavcopy [--bhavcopy PATH] [--dcf 4052]."""
+"""Command line: python -m comps --target TITAN --price-source screener|bhavcopy [--bhavcopy PATH] [--valuation 4052]."""
 from __future__ import annotations
 
 import argparse
@@ -30,7 +30,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--price-source", choices=("screener", "bhavcopy"), default="screener")
     parser.add_argument("--bhavcopy", help="NSE capital-market bhavcopy (.csv or .zip); needed for --price-source bhavcopy")
     parser.add_argument("--basis", choices=("fy", "ltm"), default="fy", help="multiples on latest fiscal year or LTM")
-    parser.add_argument("--dcf", type=float, default=config.DCF_VALUE, help="DCF value per share, rupees")
+    parser.add_argument("--valuation", "--dcf", dest="valuation", type=float, default=config.OWN_VALUATION,
+                        help="my own Titan valuation per share (discounted earnings, exit P/E), rupees")
     parser.add_argument("--ref-price", type=float, default=config.REFERENCE_PRICE,
                         help="override the reference share price, rupees (the vertical line); "
                              "default: the target's price from the data")
@@ -104,7 +105,7 @@ def main(argv: list[str] | None = None) -> int:
 
     target_metrics = metrics[target]
     stats = peer_multiple_stats(stat_peers, args.basis)
-    ranges = implied_ranges(target_metrics, stats, args.basis) + [point_range("DCF", args.dcf)]
+    ranges = implied_ranges(target_metrics, stats, args.basis) + [point_range("My valuation", args.valuation)]
 
     if bhavcopy_frame is not None:
         as_of = trade_date(bhavcopy_frame) or "unknown date"
@@ -126,7 +127,7 @@ def main(argv: list[str] | None = None) -> int:
         ("Reference peers in statistics", "yes" if args.include_reference else "no"),
         ("Skipped (could not load)", ", ".join(skipped) or "none"),
         ("Multiple basis", "LTM" if args.basis == "ltm" else "latest fiscal year"),
-        ("Price source", price_note), ("Prices as of", as_of), ("DCF value per share (₹)", args.dcf),
+        ("Price source", price_note), ("Prices as of", as_of), ("My valuation per share (₹)", args.valuation),
         ("Reference price (₹)", ref_price), ("Reference price date", ref_date),
         ("Screener basis", ", ".join(f"{s}: {config.BASIS.get(s, 'unknown')}" for s in metrics)),
     ]

@@ -14,7 +14,7 @@ from matplotlib.ticker import FuncFormatter  # noqa: E402
 
 from .valuation import ImpliedRange  # noqa: E402
 
-LIGHT, DARK, DCF, LINE = "#bcd0e8", "#2f5d8c", "#d98f1f", "#b22222"
+LIGHT, DARK, OWN, LINE = "#bcd0e8", "#2f5d8c", "#d98f1f", "#b22222"
 
 
 def football_field(ranges: Sequence[ImpliedRange], reference_price: float, reference_date: str,
@@ -22,7 +22,7 @@ def football_field(ranges: Sequence[ImpliedRange], reference_price: float, refer
     """Draw one horizontal bar per range and a vertical line at the reference price; save a PNG.
 
     Light bar = min to max across peers, dark bar = 25th to 75th percentile, white tick = median.
-    A zero-width range (the DCF) is drawn as a diamond. Returns the path written.
+    A zero-width range (my own valuation) is drawn as a diamond. Returns the path written.
     """
     if not ranges:
         raise ValueError("no ranges to plot")
@@ -33,7 +33,7 @@ def football_field(ranges: Sequence[ImpliedRange], reference_price: float, refer
     positions = list(range(len(ranges)))[::-1]  # first range at the top
     for y, r in zip(positions, ranges):
         if r.is_point:
-            ax.plot(r.mid, y, marker="D", markersize=11, color=DCF, zorder=3)
+            ax.plot(r.mid, y, marker="D", markersize=11, color=OWN, zorder=3)
             ax.annotate(f"₹{r.mid:,.0f}", (r.mid, y + 0.1), xytext=(0, 8), textcoords="offset points",
                         ha="center", va="bottom", fontsize=9)
             continue
@@ -57,12 +57,12 @@ def football_field(ranges: Sequence[ImpliedRange], reference_price: float, refer
     ax.set_ylim(-0.6, len(ranges) - 0.3)
     ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"₹{v:,.0f}"))
     ax.set_xlabel("Implied value per share (₹)")
-    ax.set_title(f"{target}: implied value per share from peer multiples and DCF")
+    ax.set_title(f"{target}: implied value per share from peer multiples vs my valuation")
     ax.grid(axis="x", alpha=0.3, zorder=0)
     for side in ("top", "right"):
         ax.spines[side].set_visible(False)
     ax.legend(handles=[Patch(color=LIGHT, label="Peer min to max"), Patch(color=DARK, label="25th to 75th percentile"),
-                       Line2D([], [], color=DCF, marker="D", linestyle="", label="DCF"),
+                       Line2D([], [], color=OWN, marker="D", linestyle="", label="My valuation"),
                        Line2D([], [], color=LINE, linestyle="--", label=f"Price ₹{reference_price:,.1f} ({reference_date})")],
               loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=8, frameon=False)
     fig.savefig(path, dpi=150, bbox_inches="tight")

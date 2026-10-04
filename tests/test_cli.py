@@ -48,11 +48,11 @@ class CommandLine(TempDirCase):
         self.run_main("--include-reference")
         self.assertAlmostEqual(self.median_pe(), 12.0)        # P/E 8, 10, 12, 14, 100
 
-    def test_implied_values_sheet_has_the_dcf_and_reference_price(self):
-        self.run_main("--dcf", "4000", "--ref-price", "4900")
+    def test_implied_values_sheet_has_my_valuation_and_reference_price(self):
+        self.run_main("--valuation", "4000", "--ref-price", "4900")
         rows = self.sheet_rows("Implied values")
-        dcf = next(row for row in rows if row[0] == "DCF")
-        self.assertEqual(dcf[3], 4000)
+        own = next(row for row in rows if row[0] == "My valuation")
+        self.assertEqual(own[3], 4000)
         price = next(row for row in rows if row[0] and str(row[0]).startswith("Reference price"))
         self.assertEqual(price[3], 4900)
 

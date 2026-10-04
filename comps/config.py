@@ -24,7 +24,7 @@ BASIS = {
     "TRENT": "consolidated",
 }
 
-DCF_VALUE = 4052.0          # Titan DCF, rupees per share
+OWN_VALUATION = 4052.0      # my Titan valuation (discounted earnings, exit P/E), rupees per share
 # Reference price (the vertical line in the chart). By default it is read from the data: the target's price
 # (Screener "Current Price", or the bhavcopy close). Set REFERENCE_PRICE / REFERENCE_DATE to override, or pass
 # --ref-price / --ref-date on the command line.

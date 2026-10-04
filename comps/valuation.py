@@ -86,5 +86,5 @@ def implied_ranges(target: CompanyMetrics, stats: dict[str, PeerStats], basis: s
 
 
 def point_range(label: str, value: float) -> ImpliedRange:
-    """A single value shown as a zero-width range, e.g. the DCF."""
+    """A single value shown as a zero-width range, e.g. my own valuation."""
     return ImpliedRange(label, value, value, value, value, value)

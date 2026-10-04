@@ -2,11 +2,11 @@
 
 [![tests](https://github.com/Dakshcore/jewellery-peer-comps/actions/workflows/tests.yml/badge.svg)](https://github.com/Dakshcore/jewellery-peer-comps/actions/workflows/tests.yml)
 
-A trading-comps tool for Titan Company and its listed Indian jewellery peers. It reads financials from Screener.in Excel exports and prices from NSE's bhavcopy (or from Screener), computes EV/EBITDA, P/E and EV/Sales for each company, and turns the peer range into an implied value per share for Titan, drawn as a football-field chart next to my DCF.
+A trading-comps tool for Titan Company and its listed Indian jewellery peers. It reads financials from Screener.in Excel exports and prices from NSE's bhavcopy (or from Screener), computes EV/EBITDA, P/E and EV/Sales for each company, and turns the peer range into an implied value per share for Titan, drawn as a football-field chart next to my own Titan valuation.
 
-## Why comps, when I already have a DCF
+## Why comps, when I already have a valuation
 
-My Titan DCF values the stock at ₹4,052 a share, against a price of ₹4,515.7 on 1 Oct 2026. A DCF says what the business is worth if my forecasts are right. Comps say what the market is paying today for similar businesses. They fail in different ways: a DCF is only as good as its growth and margin assumptions, while comps inherit whatever mood the market is in. Putting both on one chart shows whether the gap between ₹4,052 and ₹4,515.7 is my forecasts being cautious or Titan simply trading at a premium to its peers.
+My Titan valuation ([titan-valuation](https://github.com/Dakshcore/titan-valuation), a discounted-earnings model with an exit P/E) values the stock at ₹4,052 a share, against a price of ₹4,515.7 on 1 Oct 2026. That model says what the business is worth if my forecasts are right. Comps say what the market is paying today for similar businesses. They fail in different ways: a forecast-based model is only as good as its growth and margin assumptions, while comps inherit whatever mood the market is in. Putting both on one chart shows whether the gap between ₹4,052 and ₹4,515.7 is my forecasts being cautious or Titan simply trading at a premium to its peers.
 
 ## Results
 
@@ -36,10 +36,10 @@ Titan's implied value per share, applying those peer multiples to Titan's own nu
 | EV/EBITDA | ₹974 | ₹1,523 | ₹1,977 | ₹383 to ₹2,284 |
 | P/E | ₹1,025 | ₹1,752 | ₹2,346 | ₹518 to ₹2,455 |
 | EV/Sales | ₹585 | ₹964 | ₹1,369 | ₹541 to ₹1,492 |
-| DCF | | ₹4,052 | | |
+| My valuation | | ₹4,052 | | |
 | Price (1 Oct 2026) | | ₹4,515.7 | | |
 
-![Football field: Titan implied value per share from peer multiples, against the DCF and the share price](football_field.png)
+![Football field: Titan implied value per share from peer multiples, against my valuation and the share price](football_field.png)
 
 On an LTM basis (`--basis ltm`, to Jun-26) the peer median EV/EBITDA is 18.8x, P/E 28.6x and EV/Sales 1.2x, and Titan's implied medians are ₹1,667, ₹1,857 and ₹920.
 
@@ -47,7 +47,7 @@ On an LTM basis (`--basis ltm`, to Jun-26) the peer median EV/EBITDA is 18.8x, P
 
 - Titan trades at 51.4x EV/EBITDA and 79.0x P/E, about 2.6x the core-peer medians (19.6x and 30.7x). Among the jewellers only Thangamayil (27.7x, 43.0x) and Kalyan (23.4x, 40.4x) come anywhere near it, and Senco (7.5x, 9.1x) is far below.
 - Titan's multiples sit closer to Trent's (37.3x EV/EBITDA, 80.0x P/E) than to the jewellers'. Trent has twice Titan's EBITDA margin (18.7% vs 9.5%) and about a quarter of its inventory days (42 vs 178).
-- All three peer-multiple methods imply values well below the market price (medians ₹964 to ₹1,752 against ₹4,515.7), so the market is paying a premium that these peers' multiples do not explain. The DCF of ₹4,052 is about 10% under the price.
+- All three peer-multiple methods imply values well below the market price (medians ₹964 to ₹1,752 against ₹4,515.7), so the market is paying a premium that these peers' multiples do not explain. My own valuation of ₹4,052 is about 10% under the price.
 - Profitability and returns do not separate Titan from the group: ROCE of 16.3% is inside the 15.1% to 22.5% peer range, and its EBITDA margin is above Kalyan, Thangamayil and P N Gadgil but below Senco. What does stand out is size (market cap about 4.8x the four core peers combined) and the highest EV/Sales (4.9x vs 0.9x to 1.8x).
 
 ### Caveats
@@ -70,7 +70,7 @@ Full write-up: `outputs/RESULTS.md` (generated locally, not committed). Analysis
 | `comps/valuation.py` | Peer min / 25th / median / 75th / max and the implied value per share for the target |
 | `comps/charts.py` | The football-field chart (PNG) |
 | `comps/excel.py` | `outputs/comps.xlsx`: Comps table, Implied values, Inputs & as-of dates, Notes |
-| `comps/config.py` | Peer groups, DCF value, reference price and the method notes |
+| `comps/config.py` | Peer groups, my valuation, reference price and the method notes |
 | `comps/__main__.py` | The command line |
 
 ## Quick start
@@ -85,7 +85,7 @@ python -m comps --target TITAN --price-source bhavcopy --bhavcopy data/raw/BhavC
 python -m unittest -v
 ```
 
-Other options: `--dcf 4052` (DCF value per share), `--ref-price 4515.7` and `--ref-date 1-Oct-2026` (the price line), `--basis ltm` (multiples on the last twelve months instead of the latest fiscal year), `--peers A,B,C`, `--reference TRENT`, `--include-reference` (put the reference peers into the medians), `--data-dir`, `--out-dir`. Outputs go to `outputs/`: `comps.xlsx` and `football_field.png`.
+Other options: `--valuation 4052` (my valuation per share), `--ref-price 4515.7` and `--ref-date 1-Oct-2026` (the price line), `--basis ltm` (multiples on the last twelve months instead of the latest fiscal year), `--peers A,B,C`, `--reference TRENT`, `--include-reference` (put the reference peers into the medians), `--data-dir`, `--out-dir`. Outputs go to `outputs/`: `comps.xlsx` and `football_field.png`.
 
 Written for Python 3.13 with NumPy, pandas, openpyxl and Matplotlib (see `requirements.txt`).
 
@@ -122,7 +122,7 @@ All six are listed on NSE with these symbols and have a March fiscal year-end. E
 - **Also computed:** revenue and EBITDA growth (1 year and 3-year CAGR), EBITDA and net margin, ROCE = EBIT / (Equity share capital + Reserves + Borrowings), ROE = Net profit / (Equity share capital + Reserves), and inventory days = Inventory / Sales × 365, which matters for jewellers because gold stock is most of their balance sheet.
 - **Peer tiers:** the core jewellers set the medians. Trent is shown separately and left out of the statistics unless `--include-reference` is passed.
 - **Peer statistics:** minimum, 25th percentile, median, 75th percentile and maximum, using linear interpolation.
-- **Implied value per share:** for an EV multiple, (multiple × Titan's metric − Titan's net debt) / shares. For P/E, multiple × Titan's net profit / shares. The chart shows the 25th to 75th percentile as a dark bar, the minimum to maximum as a light bar, the DCF as a diamond and the reference price as a dashed line.
+- **Implied value per share:** for an EV multiple, (multiple × Titan's metric − Titan's net debt) / shares. For P/E, multiple × Titan's net profit / shares. The chart shows the 25th to 75th percentile as a dark bar, the minimum to maximum as a light bar, my own valuation as a diamond and the reference price as a dashed line.
 
 ## Limitations
 

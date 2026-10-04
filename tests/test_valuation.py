@@ -68,7 +68,7 @@ class ImpliedValues(TempDirCase):
         pe = ranges[1]   # P/E 8, 9, 10, 11, 12 -> x 100 / 10 shares
         self.assertEqual((pe.minimum, pe.low, pe.mid, pe.high, pe.maximum), (80, 90, 100, 110, 120))
 
-    def test_point_range_for_the_dcf(self):
-        dcf = point_range("DCF", 4052.0)
-        self.assertTrue(dcf.is_point)
-        self.assertEqual((dcf.low, dcf.mid, dcf.high), (4052.0, 4052.0, 4052.0))
+    def test_point_range_for_my_valuation(self):
+        own = point_range("My valuation", 4052.0)
+        self.assertTrue(own.is_point)
+        self.assertEqual((own.low, own.mid, own.high), (4052.0, 4052.0, 4052.0))
