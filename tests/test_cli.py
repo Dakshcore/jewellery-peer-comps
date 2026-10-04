@@ -56,6 +56,18 @@ class CommandLine(TempDirCase):
         price = next(row for row in rows if row[0] and str(row[0]).startswith("Reference price"))
         self.assertEqual(price[3], 4900)
 
+    def test_several_labelled_valuations_each_get_a_row(self):
+        self.run_main("--valuation", "My FCFF DCF=2131", "--valuation", "My earnings model=4058")
+        rows = {row[0]: row[3] for row in self.sheet_rows("Implied values") if row[0]}
+        self.assertEqual(rows["My FCFF DCF"], 2131)
+        self.assertEqual(rows["My earnings model"], 4058)
+
+    def test_default_valuations_come_from_config(self):
+        from comps import config
+        self.run_main()
+        labels = {row[0] for row in self.sheet_rows("Implied values") if row[0]}
+        self.assertTrue(set(config.OWN_VALUATIONS) <= labels)
+
     def test_reference_price_defaults_to_the_target_price_in_the_data_with_an_as_of_date(self):
         code, out, _ = self.run_main("--as-of", "01-Oct-2026")
         self.assertEqual(code, 0)

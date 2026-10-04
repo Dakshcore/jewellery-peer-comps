@@ -1,4 +1,4 @@
-"""Command line: python -m comps --target TITAN --price-source screener|bhavcopy [--bhavcopy PATH] [--valuation 4052]."""
+"""Command line: python -m comps --target TITAN --price-source screener|bhavcopy [--bhavcopy PATH] [--valuation "My FCFF DCF=2131"]."""
 from __future__ import annotations
 
 import argparse
@@ -19,6 +19,17 @@ def _symbols(text: str) -> list[str]:
     return [part.strip().upper() for part in text.split(",") if part.strip()]
 
 
+def _parse_valuations(items: list[str] | None) -> dict[str, float]:
+    """'LABEL=RUPEES' strings (or bare numbers) to {label: value}; None gives the config defaults."""
+    if not items:
+        return dict(config.OWN_VALUATIONS)
+    out = {}
+    for item in items:
+        label, _, value = item.rpartition("=")
+        out[label.strip() or "My valuation"] = float(value)
+    return out
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(prog="python -m comps", description="Trading comps from Screener workbooks.")
     parser.add_argument("--target", default=config.TARGET, help="symbol to value (default %(default)s)")
@@ -30,8 +41,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--price-source", choices=("screener", "bhavcopy"), default="screener")
     parser.add_argument("--bhavcopy", help="NSE capital-market bhavcopy (.csv or .zip); needed for --price-source bhavcopy")
     parser.add_argument("--basis", choices=("fy", "ltm"), default="fy", help="multiples on latest fiscal year or LTM")
-    parser.add_argument("--valuation", "--dcf", dest="valuation", type=float, default=config.OWN_VALUATION,
-                        help="my own Titan valuation per share (discounted earnings, exit P/E), rupees")
+    parser.add_argument("--valuation", "--dcf", dest="valuations", action="append", metavar="LABEL=RUPEES",
+                        help="my own Titan valuation per share, e.g. 'My FCFF DCF=2131'; repeat for several "
+                             "(a bare number is labelled 'My valuation'); default: config.OWN_VALUATIONS")
     parser.add_argument("--ref-price", type=float, default=config.REFERENCE_PRICE,
                         help="override the reference share price, rupees (the vertical line); "
                              "default: the target's price from the data")
@@ -43,6 +55,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     args = parser.parse_args(argv)
     if args.price_source == "bhavcopy" and not args.bhavcopy:
         parser.error("--price-source bhavcopy needs --bhavcopy PATH")
+    try:
+        args.valuations = _parse_valuations(args.valuations)
+    except ValueError:
+        parser.error("--valuation takes LABEL=RUPEES or a number")
     return args
 
 
@@ -105,7 +121,7 @@ def main(argv: list[str] | None = None) -> int:
 
     target_metrics = metrics[target]
     stats = peer_multiple_stats(stat_peers, args.basis)
-    ranges = implied_ranges(target_metrics, stats, args.basis) + [point_range("My valuation", args.valuation)]
+    ranges = implied_ranges(target_metrics, stats, args.basis) + [point_range(label, value) for label, value in args.valuations.items()]
 
     if bhavcopy_frame is not None:
         as_of = trade_date(bhavcopy_frame) or "unknown date"
@@ -127,7 +143,7 @@ def main(argv: list[str] | None = None) -> int:
         ("Reference peers in statistics", "yes" if args.include_reference else "no"),
         ("Skipped (could not load)", ", ".join(skipped) or "none"),
         ("Multiple basis", "LTM" if args.basis == "ltm" else "latest fiscal year"),
-        ("Price source", price_note), ("Prices as of", as_of), ("My valuation per share (₹)", args.valuation),
+        ("Price source", price_note), ("Prices as of", as_of), ("My valuations per share (₹)", "; ".join(f"{k}: {v:,.0f}" for k, v in args.valuations.items())),
         ("Reference price (₹)", ref_price), ("Reference price date", ref_date),
         ("Screener basis", ", ".join(f"{s}: {config.BASIS.get(s, 'unknown')}" for s in metrics)),
     ]

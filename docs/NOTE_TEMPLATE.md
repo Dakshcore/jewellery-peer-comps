@@ -12,7 +12,7 @@ Subtitle line: Daksh Chaudhary, B.Sc. (Hons.) Computer Science, Keshav Mahavidya
 
 ## Summary (one paragraph)
 
-[Two to four sentences. What was done: comps for Titan against four jewellery peers, Trent shown separately. What came out: the range of Titan value per share implied by [which multiples], and where my DCF of Rs 4,052 sits against that range and against the market close of Rs [price] on [date]. One honest caveat.]
+[Two to four sentences. What was done: comps for Titan against four jewellery peers, Trent shown separately. What came out: the range of Titan value per share implied by [which multiples], and where my FCFF DCF (Rs 2,131) and earnings model (Rs 4,058) sit against that range and against the market close of Rs [price] on [date]. One honest caveat.]
 
 ## Peer selection
 
@@ -41,7 +41,7 @@ Table notes: [LTM date, pricing date, units, n/m rules.]
 
 ## Football field
 
-[Insert chart. Bars: implied Titan value per share from EV/EBITDA, P/E, EV/Sales (low to high, median marked). Lines: DCF Rs 4,052 and market close Rs [price] on [date].]
+[Insert chart. Bars: implied Titan value per share from EV/EBITDA, P/E, EV/Sales (low to high, median marked). Diamonds: FCFF DCF Rs 2,131 and earnings model Rs 4,058. Line: market close Rs [price] on [date].]
 
 One-line caption: [what the chart shows in plain words.]
 

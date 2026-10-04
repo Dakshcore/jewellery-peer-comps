@@ -24,7 +24,11 @@ BASIS = {
     "TRENT": "consolidated",
 }
 
-OWN_VALUATION = 4052.0      # my Titan valuation (discounted earnings, exit P/E), rupees per share
+# My own Titan valuations (titan-valuation repo, 1-Oct-2026 price), rupees per share; each is a diamond on the chart.
+OWN_VALUATIONS = {
+    "My FCFF DCF": 2131.0,               # free cash flow to the firm, WACC, Gordon terminal value
+    "My earnings model": 4058.0,         # discounted earnings, 26.5x exit P/E
+}
 # Reference price (the vertical line in the chart). By default it is read from the data: the target's price
 # (Screener "Current Price", or the bhavcopy close). Set REFERENCE_PRICE / REFERENCE_DATE to override, or pass
 # --ref-price / --ref-date on the command line.

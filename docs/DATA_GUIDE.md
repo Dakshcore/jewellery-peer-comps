@@ -78,7 +78,7 @@ Why: one official closing price per company on one date.
 Which date to use:
 
 - Main date: use one date for all six companies. Prefer the latest trading day when you run the comps.
-- DCF date: your DCF compares against the NSE close of 25 Sep 2026 (Rs 4,884 for Titan). Download 25 Sep 2026 too. Then you can show comps on the same date as the DCF. Download both days.
+- Valuation date: both Titan models (titan-valuation) now use the NSE close of 1 Oct 2026 (Rs 4,515.70), the same date as the comps, so one bhavcopy covers both.
 - Refresh date: after most peers report Q2 FY27, download a new bhavcopy and re-run.
 - If a date was a market holiday, there is no file. Use the previous trading day and say so.
 

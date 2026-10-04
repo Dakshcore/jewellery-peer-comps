@@ -22,7 +22,7 @@ def football_field(ranges: Sequence[ImpliedRange], reference_price: float, refer
     """Draw one horizontal bar per range and a vertical line at the reference price; save a PNG.
 
     Light bar = min to max across peers, dark bar = 25th to 75th percentile, white tick = median.
-    A zero-width range (my own valuation) is drawn as a diamond. Returns the path written.
+    A zero-width range (one of my own valuations) is drawn as a diamond. Returns the path written.
     """
     if not ranges:
         raise ValueError("no ranges to plot")
@@ -57,12 +57,12 @@ def football_field(ranges: Sequence[ImpliedRange], reference_price: float, refer
     ax.set_ylim(-0.6, len(ranges) - 0.3)
     ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"₹{v:,.0f}"))
     ax.set_xlabel("Implied value per share (₹)")
-    ax.set_title(f"{target}: implied value per share from peer multiples vs my valuation")
+    ax.set_title(f"{target}: implied value per share from peer multiples vs my valuations")
     ax.grid(axis="x", alpha=0.3, zorder=0)
     for side in ("top", "right"):
         ax.spines[side].set_visible(False)
     ax.legend(handles=[Patch(color=LIGHT, label="Peer min to max"), Patch(color=DARK, label="25th to 75th percentile"),
-                       Line2D([], [], color=OWN, marker="D", linestyle="", label="My valuation"),
+                       Line2D([], [], color=OWN, marker="D", linestyle="", label="My valuations"),
                        Line2D([], [], color=LINE, linestyle="--", label=f"Price ₹{reference_price:,.1f} ({reference_date})")],
               loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=8, frameon=False)
     fig.savefig(path, dpi=150, bbox_inches="tight")
