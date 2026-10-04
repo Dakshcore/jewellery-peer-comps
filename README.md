@@ -96,7 +96,7 @@ Nothing is scraped. Both inputs are files you download yourself, and `data/raw/`
 1. **Screener.in:** for each company, open its page, click "Export to Excel", and save the file as `data/raw/screener/<NSE_SYMBOL>.xlsx` (`TITAN.xlsx`, `KALYANKJIL.xlsx`, `SENCO.xlsx`, `THANGAMAYL.xlsx`, `PNGJL.xlsx`, `TRENT.xlsx`). Use the consolidated page where there is one.
 2. **NSE bhavcopy (optional):** download the capital-market bhavcopy for the day you want (`BhavCopy_NSE_CM_0_0_0_YYYYMMDD_F_0000.csv.zip`) and pass it with `--bhavcopy`. Without it, prices come from the "Current Price" in each Screener export, which is the price on the day you downloaded it.
 
-More detail: [docs/DATA_GUIDE.md](docs/DATA_GUIDE.md). Plan and note template: [docs/WEEK_PLAN.md](docs/WEEK_PLAN.md), [docs/NOTE_TEMPLATE.md](docs/NOTE_TEMPLATE.md).
+More detail: [docs/DATA_GUIDE.md](docs/DATA_GUIDE.md). Note template: [docs/NOTE_TEMPLATE.md](docs/NOTE_TEMPLATE.md).
 
 **The Screener layout is undocumented.** The loader assumes the "Data Sheet" has section header rows (META, PROFIT & LOSS, Quarters, BALANCE SHEET, CASH FLOW, PRICE) and a "Report Date" row of dates in each time-series section, and it finds every row by its label inside its section, ignoring case and spacing. If a label is missing it stops and names it, so a layout surprise shows up as a clear error rather than a wrong number. Share counts are accepted in absolute numbers or crore: anything at or above 100,000 is divided by 10,000,000.
 
